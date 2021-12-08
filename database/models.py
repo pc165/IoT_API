@@ -36,5 +36,6 @@ class OrderDetails(Base):
 class Items(Base):
     __tablename__ = "items"
     id = Column(Integer, primary_key=True, index=True)
+    image_id = Column(Integer, unique=True, index=True)
     name = Column(String, index=True, nullable=False)
     price = Column(Float, index=True, nullable=False)

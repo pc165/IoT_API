@@ -83,6 +83,12 @@ class DAL:
         response = response.scalars().fetchall()
         return response
 
+    async def get_item_by_image_id(self, image_id: int):
+        query = select(models.Items).where(models.Items.image_id == image_id)
+        response = await self.db.execute(query)
+        response = response.scalars().first()
+        return response
+
     async def create_user_item(self, item: schemas.ItemBase):
         new_item = models.Items(**item.dict())
         self.db.add(new_item)

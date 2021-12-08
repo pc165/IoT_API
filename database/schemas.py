@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class ItemBase(BaseModel):
     name: str
     price: float = 0.0
+    image_id: int
 
     class Config:
         orm_mode = True
@@ -34,7 +35,7 @@ class OrderDetails(OrderDetailsBase):
 
 
 class OrderBase(BaseModel):
-    # user_id: int # Already in url path
+    # item_id: int # Already in url path
     order_details: List[OrderDetailsBase]
 
     class Config:

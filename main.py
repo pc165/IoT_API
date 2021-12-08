@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from database.config import engine, Base
 from routers.user_router import user_router
 from routers.item_router import item_router
+from routers.login_router import login_router
+
 
 app = FastAPI()
 app.include_router(user_router)
 app.include_router(item_router)
+app.include_router(login_router)
 
 
 @app.on_event("startup")

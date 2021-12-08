@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from datetime import datetime as Datetime
 from pydantic import BaseModel
 
@@ -51,16 +51,42 @@ class Order(OrderBase):
 
 
 class UserBase(BaseModel):
+    username: str
     email: str
+
+    class Config:
+        orm_mode = True
 
 
 class UserCreate(UserBase):
     password: str
 
+    class Config:
+        orm_mode = True
+
 
 class User(UserBase):
     id: int
-    orders: List[Order] = []
+    disabled: Optional[bool] = False
+
+    class Config:
+        orm_mode = True
+
+
+class UserInDB(User):
+    hashed_password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+    class Config:
+        orm_mode = True
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
 
     class Config:
         orm_mode = True

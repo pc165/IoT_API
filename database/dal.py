@@ -1,21 +1,28 @@
 from typing import List
 from sqlalchemy import update
 from sqlalchemy.future import select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session
 from . import models, schemas
 from database.config import async_session
+from login.password_utils import get_password_hash
 
 
 class DAL:
     def __init__(self, db_session: Session):
         self.db = db_session
 
-    '''
-    Database DB operations
-    '''
+    """
+    User DB operations
+    """
 
-    async def get_user(self, user_id: int):
+    async def get_user_by_id(self, user_id: int):
         query = select(models.Users).where(models.Users.id == user_id)
+        response = await self.db.execute(query)
+        response = response.scalars().first()
+        return response
+
+    async def get_user_by_username(self, username: str):
+        query = select(models.Users).where(models.Users.username == username)
         response = await self.db.execute(query)
         response = response.scalars().first()
         return response
@@ -32,23 +39,23 @@ class DAL:
         return response
 
     async def update_user_password(self, user: schemas.UserCreate):
-        hashed_password = user.password
+        hashed_password = get_password_hash(user.password)
         query = update(models.Users).where(models.Users.email == user.email).values(hashed_password=hashed_password)
         query.execution_options(synchronize_session="fetch")
         await self.db.execute(query)
         return None
 
     async def create_user(self, user: schemas.UserCreate):
-        hashed_password = user.password
-        new_user = models.Users(email=user.email, hashed_password=hashed_password)
+        hashed_password = get_password_hash(user.password)
+        new_user = models.Users(hashed_password=hashed_password, **user.dict(exclude={'password'}))
         self.db.add(new_user)
         await self.db.flush()
         await self.db.refresh(new_user)
         return new_user
 
-    '''
+    """
     Orders DB operations
-    '''
+    """
 
     async def create_order(self, user_id: int, order: schemas.OrderBase):
         new_order = models.Orders(user_id=user_id)
@@ -66,9 +73,9 @@ class DAL:
         response = response.scalars().fetchall()
         return response
 
-    '''
+    """
     Item DB operations
-    '''
+    """
 
     async def get_items(self, skip: int = 0, limit: int = 100):
         query = select(models.Items).order_by(models.Items.id).offset(skip).limit(limit)

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, ForeignKeyConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from .config import Base
 from sqlalchemy.sql import func
@@ -7,7 +7,9 @@ from sqlalchemy.sql import func
 class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
+    disabled = Column(Boolean, default=False, nullable=False)
     hashed_password = Column(String)
     # one user can have multiple orders
     orders = relationship("Orders", cascade="all, delete", lazy='selectin')

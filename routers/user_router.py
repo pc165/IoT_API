@@ -55,3 +55,9 @@ async def get_my_orders(skip: int = 0, limit: int = 100,
                         db: DAL = Depends(get_dal),
                         current_user: schemas.User = Depends(get_current_active_user)) -> List[schemas.Order]:
     return await db.get_all_orders_from_user(user_id=current_user.id, skip=skip, limit=limit)
+
+
+@user_router.post("/users/me/orders/", response_model=schemas.Order)
+async def create_order_for_me(order: schemas.OrderBase, db: DAL = Depends(get_dal),
+                              current_user: schemas.User = Depends(get_current_active_user)) -> List[schemas.Order]:
+    return await db.create_order(user_id=current_user.id, order=order)

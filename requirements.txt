@@ -16,3 +16,5 @@ python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
 keras
+dash
+pandas

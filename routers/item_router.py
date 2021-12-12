@@ -16,7 +16,7 @@ search = SearchImage()
 search.load_index()
 
 
-@item_router.post("/items/{item_id}", response_model=schemas.Item)
+@item_router.post("/items/", response_model=schemas.Item)
 async def create_item(item: schemas.ItemBase, db: DAL = Depends(get_dal)):
     return await db.create_user_item(item=item)
 

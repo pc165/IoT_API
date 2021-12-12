@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class ItemBase(BaseModel):
     name: str
     price: float = 0.0
-    image_id: int
+    image_id: int = None
 
     class Config:
         orm_mode = True

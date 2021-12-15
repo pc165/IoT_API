@@ -12,7 +12,7 @@ class Users(Base):
     disabled = Column(Boolean, default=False, nullable=False)
     hashed_password = Column(String)
     # one user can have multiple orders
-    orders = relationship("Orders", cascade="all, delete", lazy='selectin')
+    orders = relationship("Orders", cascade="all, delete", lazy='selectin', primaryjoin="Users.id == Orders.user_id")
 
 
 class Orders(Base):
@@ -21,7 +21,8 @@ class Orders(Base):
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
     datetime = Column(DateTime(timezone=True), server_default=func.now())
     # orders can have multiple items
-    order_details = relationship("OrderDetails", cascade="all, delete", lazy='selectin')
+    order_details = relationship("OrderDetails", cascade="all, delete", lazy='selectin',
+                                 primaryjoin="Orders.id == OrderDetails.order_id")
 
 
 # association table to store extra data
@@ -30,7 +31,7 @@ class OrderDetails(Base):
     order_id = Column(Integer, ForeignKey("orders.id"), primary_key=True, index=True)
     item_id = Column(Integer, ForeignKey("items.id"), primary_key=True, index=True)
     quantity = Column(Integer, nullable=False)
-    items = relationship("Items", lazy='selectin')
+    items = relationship("Items", lazy='selectin', primaryjoin="OrderDetails.item_id == Items.id")
 
 
 class Items(Base):

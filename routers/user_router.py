@@ -38,7 +38,8 @@ async def create_order(user_id: int, order: schemas.OrderBase, db: DAL = Depends
 
 
 @user_router.get("/users/{user_id}/orders", response_model=List[schemas.Order])
-async def get_orders_from_user(user_id: int, skip: int = 0, limit: int = 100, db: DAL = Depends(get_dal)) -> List[schemas.Order]:
+async def get_orders_from_user(user_id: int, skip: int = 0, limit: int = 100, db: DAL = Depends(get_dal)) -> List[
+    schemas.Order]:
     db_user = await db.get_user_by_id(user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")

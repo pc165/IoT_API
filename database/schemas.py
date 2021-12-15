@@ -22,6 +22,7 @@ class Item(ItemBase):
 class OrderDetailsBase(BaseModel):
     item_id: int
     quantity: int = 1
+    items: ItemBase = None
 
     class Config:
         orm_mode = True
@@ -35,7 +36,6 @@ class OrderDetails(OrderDetailsBase):
 
 
 class OrderBase(BaseModel):
-    # item_id: int # Already in url path
     order_details: List[OrderDetailsBase]
 
     class Config:
@@ -46,6 +46,7 @@ class Order(OrderBase):
     id: int
     user_id: int
     datetime: Datetime
+    total: float = 0
 
     class Config:
         orm_mode = True

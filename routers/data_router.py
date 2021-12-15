@@ -13,8 +13,8 @@ data_router = APIRouter()
 
 
 @data_router.get("/")
-async def get(skip=0, limit=10, db: DAL = Depends(get_dal)):
-    orders = await db.get_all_orders(skip=skip, limit=limit)
+async def get_latest_orders(skip=0, limit=10, db: DAL = Depends(get_dal)):
+    orders = await db.get_all_orders(skip=skip, limit=limit, desc=True)
     orders: List[schemas.Order] = parse_obj_as(List[schemas.Order], orders)
     for i in orders:
         for j in i.order_details:

@@ -73,9 +73,10 @@ class DAL:
         response = response.scalars().fetchall()
         return response
 
-    async def get_all_orders(self, skip: int = 0, limit: int = 100):
+    async def get_all_orders(self, skip: int = 0, limit: int = 100, desc: bool = False):
         query = select(models.Orders) \
-            .order_by(models.Orders.id).offset(skip).limit(limit)
+            .order_by(models.Orders.id.desc() if desc else models.Orders.id).offset(skip).limit(limit)
+
         response = await self.db.execute(query)
         response = response.scalars().all()
         return response
